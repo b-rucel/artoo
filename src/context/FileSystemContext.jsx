@@ -2,7 +2,10 @@ import React, { createContext, useContext, useReducer } from 'react';
 
 const initialState = {
   nodes: {},
-  currentDirectory: '/',
+  currentDirectory: {
+    path: '/',
+    contents: []
+  },
   selectedFiles: [],
   operations: {},
   isLoading: false,
@@ -18,13 +21,19 @@ function fileSystemReducer(state, action) {
         return acc;
       }, {});
       return { ...state, nodes };
-      
+
     case 'SET_CURRENT_DIRECTORY':
-      return { ...state, currentDirectory: action.payload };
-      
+      return {
+        ...state,
+        currentDirectory: {
+          path: action.payload.path,
+          contents: action.payload.contents || []
+        }
+      };
+
     case 'SET_SELECTED_FILES':
       return { ...state, selectedFiles: action.payload };
-      
+
     case 'SET_OPERATION':
       return {
         ...state,
@@ -33,13 +42,13 @@ function fileSystemReducer(state, action) {
           [action.payload.id]: action.payload.operation
         }
       };
-      
+
     case 'SET_LOADING':
       return { ...state, isLoading: action.payload };
-      
+
     case 'SET_ERROR':
       return { ...state, error: action.payload };
-      
+
     default:
       return state;
   }

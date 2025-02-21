@@ -10,7 +10,9 @@ class FileService {
       throw new Error('Failed to list directory');
     }
     const data = await response.json();
-    return Array.isArray(data) ? data : [];  // Ensure we always return an array
+
+    // return Array(data.files); // ensure we always return an array {0:[]}
+    return Array.isArray(data.files) ? data.files : [];  // Ensure we always return an array
   }
 
   async uploadFile(file, path) {
