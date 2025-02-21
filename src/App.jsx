@@ -4,6 +4,8 @@ import { Badge } from "@/components/ui/badge"
 import { ArrowRight, Rocket, Palette, Gauge, Moon, Sun } from "lucide-react"
 import { useTheme } from "@/components/theme-provider"
 
+import { FileList } from "@/components/FileList"
+
 
 function App() {
   const { theme, setTheme } = useTheme()
@@ -39,15 +41,9 @@ function App() {
         {/* File Explorer Grid */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           {/* Sidebar - File Tree */}
-          <Card className="md:col-span-1">
-            <CardHeader>
-              <CardTitle>Files</CardTitle>
-            </CardHeader>
-            <CardContent>
-              {/* File tree component will go here */}
-              <div className="text-muted-foreground">File tree coming soon...</div>
-            </CardContent>
-          </Card>
+          <div className="md:col-span-1">
+            <FileList />
+          </div>
 
           {/* Main Content Area */}
           <Card className="md:col-span-3">
@@ -58,8 +54,7 @@ function App() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              {/* File grid/list view will go here */}
-              <div className="text-muted-foreground">Content area coming soon...</div>
+              <FileList />
             </CardContent>
           </Card>
         </div>
