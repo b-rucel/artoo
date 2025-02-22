@@ -78,7 +78,7 @@ export function FolderTree() {
   );
 
   return (
-    <Card className="min-w-[200px]">
+    <Card className="min-w-[200px] rounded-none border-t-0">
       <CardHeader className="px-6 py-2">
         <CardTitle className="text-sm font-medium">
           {currentDirectory?.path || '/'}

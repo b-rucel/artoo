@@ -5,7 +5,8 @@ class FileService {
   }
 
   async listDirectory(path) {
-    const response = await fetch(`${this.baseUrl}/files?path=${encodeURIComponent(path)}`);
+    const normalizedPath = path === '/' ? '' : path;
+    const response = await fetch(`${this.baseUrl}/files?path=${encodeURIComponent(normalizedPath)}`);
     if (!response.ok) {
       throw new Error('Failed to list directory');
     }

@@ -11,7 +11,7 @@ export function FileDetails({ file }) {
           <FileIcon className="h-5 w-5 text-muted-foreground" />
           <h2 className="font-semibold">Details</h2>
         </div>
-        <Card>
+        <Card className="rounded">
           <CardContent className="pt-6">
             <div className="text-center text-muted-foreground">
               Select a file to view details
@@ -28,7 +28,7 @@ export function FileDetails({ file }) {
         <FileIcon className="h-5 w-5 text-muted-foreground" />
         <h2 className="font-semibold">Details</h2>
       </div>
-      <Card>
+      <Card className="rounded">
         <CardContent className="pt-6">
           <div className="space-y-4">
             <div>
@@ -44,8 +44,8 @@ export function FileDetails({ file }) {
               <p className="mt-1">{file.path}</p>
             </div>
             <div className="flex gap-2">
-              <Button size="sm" className="flex-1">Download</Button>
-              <Button size="sm" variant="outline" className="flex-1">Share</Button>
+              <Button size="sm" className="flex-1 rounded">Download</Button>
+              <Button size="sm" variant="outline" className="flex-1 rounded">Share</Button>
             </div>
           </div>
         </CardContent>
