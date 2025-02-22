@@ -8,6 +8,7 @@ import { LayoutGridIcon, ListIcon } from 'lucide-react';
 export function FileExplorer({ onFileSelect }) {
   const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'list'
   const [selectedFile, setSelectedFile] = useState(null);
+  const [currentPath, setCurrentPath] = useState('/'); // Add current path state
 
   const handleFileSelect = (file) => {
     setSelectedFile(file);
@@ -21,7 +22,9 @@ export function FileExplorer({ onFileSelect }) {
           <h1 className="text-2xl font-bold">Files</h1>
           <div>
             <h2 className="font-semibold">Explorer</h2>
-            <p className="text-sm text-muted-foreground">Your files and folders will appear here</p>
+            <p className="text-sm text-muted-foreground">
+              {currentPath === '/' ? 'Root directory' : `Directory: ${currentPath}`}
+            </p>
           </div>
         </div>
         <div className="border rounded p-1">
@@ -50,6 +53,8 @@ export function FileExplorer({ onFileSelect }) {
               onFileSelect={handleFileSelect} 
               viewMode={viewMode} 
               selectedFilePath={selectedFile?.name}
+              currentPath={currentPath}
+              onNavigate={setCurrentPath}
             />
           </CardContent>
         </Card>
