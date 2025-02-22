@@ -2,7 +2,7 @@ import React from 'react';
 import { useFileOperations } from '../hooks/useFileOperations';
 import { FileIcon, FolderIcon } from 'lucide-react';
 
-export function FileList({ onFileSelect, viewMode }) {
+export function FileList({ onFileSelect, viewMode, selectedFilePath }) {
   const {
     currentDirectory,
     isLoading,
@@ -45,15 +45,19 @@ export function FileList({ onFileSelect, viewMode }) {
                 group
                 flex flex-col items-center justify-center
                 p-4
-                rounded-lg
+                rounded
                 hover:bg-accent hover:text-accent-foreground
                 cursor-pointer
                 transition-colors
-                border border-transparent
+                border
+                ${item.name === selectedFilePath 
+                  ? 'border-primary bg-accent' 
+                  : 'border-transparent'}
                 hover:border-border
               `}
             >
-              {/* {console.log('FileList.jsx item', item)} */}
+
+              {console.log('FileList.jsx item', item, selectedFilePath)}
               {item.type === 'directory' ? (
                 <FolderIcon className="h-12 w-12 text-primary opacity-80 group-hover:opacity-100 mb-3" />
               ) : (
@@ -78,11 +82,14 @@ export function FileList({ onFileSelect, viewMode }) {
                 group
                 flex items-center
                 p-3
-                rounded-lg
+                rounded
                 hover:bg-accent hover:text-accent-foreground
                 cursor-pointer
                 transition-colors
-                border border-transparent
+                border
+                ${item.name === selectedFilePath 
+                  ? 'border-primary bg-accent' 
+                  : 'border-transparent'}
                 hover:border-border
               `}
             >

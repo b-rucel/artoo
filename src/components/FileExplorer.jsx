@@ -7,6 +7,12 @@ import { LayoutGridIcon, ListIcon } from 'lucide-react';
 
 export function FileExplorer({ onFileSelect }) {
   const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'list'
+  const [selectedFile, setSelectedFile] = useState(null);
+
+  const handleFileSelect = (file) => {
+    setSelectedFile(file);
+    onFileSelect(file);
+  };
 
   return (
     <main className="flex-1 p-4 flex flex-col">
@@ -18,10 +24,10 @@ export function FileExplorer({ onFileSelect }) {
             <p className="text-sm text-muted-foreground">Your files and folders will appear here</p>
           </div>
         </div>
-        <div className="border rounded-lg p-1">
+        <div className="border rounded p-1">
           <button
             onClick={() => setViewMode('grid')}
-            className={`p-2 rounded-md transition-colors ${
+            className={`p-2 rounded transition-colors ${
               viewMode === 'grid' ? 'bg-accent text-accent-foreground' : ''
             }`}
           >
@@ -29,7 +35,7 @@ export function FileExplorer({ onFileSelect }) {
           </button>
           <button
             onClick={() => setViewMode('list')}
-            className={`p-2 rounded-md transition-colors ${
+            className={`p-2 rounded transition-colors ${
               viewMode === 'list' ? 'bg-accent text-accent-foreground' : ''
             }`}
           >
@@ -38,9 +44,13 @@ export function FileExplorer({ onFileSelect }) {
         </div>
       </div>
       <div className="flex gap-4 flex-1">
-        <Card className="flex-1">
-          <CardContent>
-            <FileList onFileSelect={onFileSelect} viewMode={viewMode} />
+        <Card className="flex-1 rounded">
+          <CardContent className="p-0">
+            <FileList 
+              onFileSelect={handleFileSelect} 
+              viewMode={viewMode} 
+              selectedFilePath={selectedFile?.name}
+            />
           </CardContent>
         </Card>
       </div>

@@ -94,7 +94,7 @@ export function FolderTree() {
               key={item.path}
               onClick={() => loadDirectory(item.path)}
               className={`
-                flex items-center px-2 py-1.5 rounded-md
+                flex items-center px-2 py-1.5 rounded
                 text-sm
                 hover:bg-accent hover:text-accent-foreground
                 cursor-pointer
