@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useFileOperations } from '../hooks/useFileOperations';
 import { FileIcon, FolderIcon, LayoutGridIcon, ListIcon } from 'lucide-react';
 
-export function FileList() {
+export function FileList({ onFileSelect }) {
   const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'list'
   const {
     currentDirectory,
@@ -24,6 +24,14 @@ if (isLoading) return (
       <div className="text-destructive">Error: {error}</div>
     </div>
   );
+
+  const handleItemClick = (item) => {
+    if (item.type === 'directory') {
+      loadDirectory(item.path);
+    } else {
+      onFileSelect?.(item);
+    }
+  };
 
   return (
     <div className="space-y-4">
@@ -53,7 +61,7 @@ if (isLoading) return (
           {currentDirectory.contents?.map((item) => (
             <div
               key={item.path}
-              onClick={() => item.type === 'directory' && loadDirectory(item.path)}
+              onClick={() => handleItemClick(item)}
               className={`
                 aspect-square
                 group
@@ -87,7 +95,7 @@ if (isLoading) return (
           {currentDirectory.contents?.map((item) => (
             <div
               key={item.path}
-              onClick={() => item.type === 'directory' && loadDirectory(item.path)}
+              onClick={() => handleItemClick(item)}
               className={`
                 group
                 flex items-center
