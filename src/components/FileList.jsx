@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useFileOperations } from '../hooks/useFileOperations';
-import { FileIcon, FolderIcon, LayoutGridIcon, ListIcon } from 'lucide-react';
+import { FileIcon, FolderIcon } from 'lucide-react';
 
-export function FileList() {
-  const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'list'
+export function FileList({ onFileSelect, viewMode, selectedFilePath }) {
   const {
     currentDirectory,
     isLoading,
@@ -13,7 +12,7 @@ export function FileList() {
 
   // console.log('FileList.jsx currentDirectory', currentDirectory);
 
-if (isLoading) return (
+  if (isLoading) return (
     <div className="flex items-center justify-center h-32">
       <div className="text-muted-foreground">Loading...</div>
     </div>
@@ -25,49 +24,40 @@ if (isLoading) return (
     </div>
   );
 
+  const handleItemClick = (item) => {
+    if (item.type === 'directory') {
+      loadDirectory(item.path);
+    } else {
+      onFileSelect?.(item);
+    }
+  };
+
   return (
     <div className="space-y-4">
-      <div className="flex justify-end">
-        <div className="border rounded-lg p-1">
-          <button
-            onClick={() => setViewMode('grid')}
-            className={`p-2 rounded-md transition-colors ${
-              viewMode === 'grid' ? 'bg-accent text-accent-foreground' : ''
-            }`}
-          >
-            <LayoutGridIcon className="h-4 w-4" />
-          </button>
-          <button
-            onClick={() => setViewMode('list')}
-            className={`p-2 rounded-md transition-colors ${
-              viewMode === 'list' ? 'bg-accent text-accent-foreground' : ''
-            }`}
-          >
-            <ListIcon className="h-4 w-4" />
-          </button>
-        </div>
-      </div>
-
       {viewMode === 'grid' ? (
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
           {currentDirectory.contents?.map((item) => (
             <div
               key={item.path}
-              onClick={() => item.type === 'directory' && loadDirectory(item.path)}
+              onClick={() => handleItemClick(item)}
               className={`
                 aspect-square
                 group
                 flex flex-col items-center justify-center
                 p-4
-                rounded-lg
+                rounded
                 hover:bg-accent hover:text-accent-foreground
                 cursor-pointer
                 transition-colors
-                border border-transparent
+                border
+                ${item.name === selectedFilePath 
+                  ? 'border-primary bg-accent' 
+                  : 'border-transparent'}
                 hover:border-border
               `}
             >
-              {/* {console.log('FileList.jsx item', item)} */}
+
+              {console.log('FileList.jsx item', item, selectedFilePath)}
               {item.type === 'directory' ? (
                 <FolderIcon className="h-12 w-12 text-primary opacity-80 group-hover:opacity-100 mb-3" />
               ) : (
@@ -87,16 +77,19 @@ if (isLoading) return (
           {currentDirectory.contents?.map((item) => (
             <div
               key={item.path}
-              onClick={() => item.type === 'directory' && loadDirectory(item.path)}
+              onClick={() => handleItemClick(item)}
               className={`
                 group
                 flex items-center
                 p-3
-                rounded-lg
+                rounded
                 hover:bg-accent hover:text-accent-foreground
                 cursor-pointer
                 transition-colors
-                border border-transparent
+                border
+                ${item.name === selectedFilePath 
+                  ? 'border-primary bg-accent' 
+                  : 'border-transparent'}
                 hover:border-border
               `}
             >
