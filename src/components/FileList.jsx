@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useFileOperations } from '../hooks/useFileOperations';
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { FileIcon, FolderIcon } from 'lucide-react';
 
 export function FileList() {
   const {
@@ -10,58 +10,60 @@ export function FileList() {
     loadDirectory
   } = useFileOperations();
 
-  console.log('FileList.jsx currentDirectory', currentDirectory);
+  // console.log('FileList.jsx currentDirectory', currentDirectory);
 
-  // Load current directory contents when component mounts
-  useEffect(() => {
-    loadDirectory('/');
-  }, [loadDirectory]);
-
-  if (isLoading) return (
-    <Card>
-      <CardContent className="flex items-center justify-center h-32">
-        <div className="text-muted-foreground">Loading...</div>
-      </CardContent>
-    </Card>
+if (isLoading) return (
+    <div className="flex items-center justify-center h-32">
+      <div className="text-muted-foreground">Loading...</div>
+    </div>
   );
 
   if (error) return (
-    <Card>
-      <CardContent className="flex items-center justify-center h-32">
-        <div className="text-destructive">Error: {error}</div>
-      </CardContent>
-    </Card>
+    <div className="flex items-center justify-center h-32">
+      <div className="text-destructive">Error: {error}</div>
+    </div>
   );
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-sm font-medium">
-          {currentDirectory.path || '/'}
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <ul className="space-y-1">
-          {currentDirectory.contents?.map((item) => (
-            <li
-              key={item.path}
-              onClick={() => item.type === 'directory' && loadDirectory(item.path)}
-              className={`
-                flex items-center px-2 py-1.5 rounded-md
-                text-sm
-                hover:bg-accent hover:text-accent-foreground
-                cursor-pointer
-                ${item.type === 'directory' ? 'text-primary' : 'text-muted-foreground'}
-              `}
-            >
-              <span className="icon mr-2 opacity-70">
-                {item.type === 'directory' ? '📁' : '📄'}
-              </span>
-              <span className="flex-1 truncate">{item.name}</span>
-            </li>
-          ))}
-        </ul>
-      </CardContent>
-    </Card>
+    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+      {currentDirectory.contents?.map((item) => (
+        <div
+          key={item.path}
+          onClick={() => item.type === 'directory' && loadDirectory(item.path)}
+          className={`
+            aspect-square
+            group
+            flex flex-col items-center justify-center
+            p-4
+            rounded-lg
+            hover:bg-accent hover:text-accent-foreground
+            cursor-pointer
+            transition-colors
+            border border-transparent
+            hover:border-border
+          `}
+        >
+          {/* {console.log('FileList.jsx item', item)} */}
+          {item.type === 'directory' ? (
+            <FolderIcon className="h-12 w-12 text-primary opacity-80 group-hover:opacity-100 mb-3" />
+          ) : (
+            <FileIcon className="h-12 w-12 text-muted-foreground opacity-80 group-hover:opacity-100 mb-3" />
+          )}
+          <span className="text-sm font-medium truncate w-full text-center">
+            {item.name}
+          </span>
+          <span className="text-xs text-muted-foreground mt-1">
+            {item.type === 'directory' ? `${item.contents?.length || 0} items` : formatFileSize(item.size)}
+          </span>
+        </div>
+      ))}
+    </div>
   );
+}
+
+function formatFileSize(bytes) {
+  if (!bytes) return '0 B';
+  const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(1024));
+  return `${(bytes / Math.pow(1024, i)).toFixed(1)} ${sizes[i]}`;
 }

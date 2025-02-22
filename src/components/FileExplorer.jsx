@@ -19,7 +19,7 @@ export function FileExplorer() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {/* <FileList view="grid" /> */}
+          <FileList view="grid" />
         </CardContent>
       </Card>
     </main>
