@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useFileOperations } from '../hooks/useFileOperations';
-import { FileIcon, FolderIcon, LayoutGridIcon, ListIcon } from 'lucide-react';
+import { FileIcon, FolderIcon } from 'lucide-react';
 
-export function FileList({ onFileSelect }) {
-  const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'list'
+export function FileList({ onFileSelect, viewMode }) {
   const {
     currentDirectory,
     isLoading,
@@ -13,7 +12,7 @@ export function FileList({ onFileSelect }) {
 
   // console.log('FileList.jsx currentDirectory', currentDirectory);
 
-if (isLoading) return (
+  if (isLoading) return (
     <div className="flex items-center justify-center h-32">
       <div className="text-muted-foreground">Loading...</div>
     </div>
@@ -35,27 +34,6 @@ if (isLoading) return (
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-end">
-        <div className="border rounded-lg p-1">
-          <button
-            onClick={() => setViewMode('grid')}
-            className={`p-2 rounded-md transition-colors ${
-              viewMode === 'grid' ? 'bg-accent text-accent-foreground' : ''
-            }`}
-          >
-            <LayoutGridIcon className="h-4 w-4" />
-          </button>
-          <button
-            onClick={() => setViewMode('list')}
-            className={`p-2 rounded-md transition-colors ${
-              viewMode === 'list' ? 'bg-accent text-accent-foreground' : ''
-            }`}
-          >
-            <ListIcon className="h-4 w-4" />
-          </button>
-        </div>
-      </div>
-
       {viewMode === 'grid' ? (
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
           {currentDirectory.contents?.map((item) => (
