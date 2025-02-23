@@ -5,7 +5,10 @@ class FileService {
   }
 
   async listDirectory(path) {
-    const normalizedPath = path === '/' ? '' : path;
+    let normalizedPath = path === '/' ? '' : path;
+    if (normalizedPath.startsWith('/')) {
+      normalizedPath = normalizedPath.slice(1);
+    }
     const response = await fetch(`${this.baseUrl}/files?path=${encodeURIComponent(normalizedPath)}`);
     if (!response.ok) {
       throw new Error('Failed to list directory');
@@ -35,4 +38,4 @@ class FileService {
   // Additional methods for other file operations
 }
 
-export const fileService = new FileService(); 
+export const fileService = new FileService();

@@ -13,22 +13,21 @@ export function useFileOperations() {
       const contents = await fileService.listDirectory(path);
 
       dispatch({ type: 'SET_CONTENTS', payload: contents });
-      dispatch({
-        type: 'SET_CURRENT_DIRECTORY',
+      dispatch({ type: 'SET_CURRENT_DIRECTORY',
         payload: {
           path,
           contents
         }
       });
     } catch (err) {
-      dispatch({
-        type: 'SET_ERROR',
+      dispatch({ type: 'SET_ERROR',
         payload: err instanceof Error ? err.message : 'Failed to load directory'
       });
     } finally {
       dispatch({ type: 'SET_LOADING', payload: false });
     }
   }, [dispatch]);
+
 
   const uploadFiles = useCallback(async (files) => {
     const operationId = crypto.randomUUID();

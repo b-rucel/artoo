@@ -4,11 +4,12 @@ import { FileList } from "@/components/FileList"
 import { useState } from "react"
 import { formatFileSize } from "@/lib/utils"
 import { LayoutGridIcon, ListIcon } from 'lucide-react';
+import { useFileOperations } from "@/hooks/useFileOperations"
 
 export function FileExplorer({ onFileSelect }) {
   const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'list'
   const [selectedFile, setSelectedFile] = useState(null);
-  const [currentPath, setCurrentPath] = useState('/'); // Add current path state
+  const { currentDirectory, loadDirectory } = useFileOperations();
 
   const handleFileSelect = (file) => {
     setSelectedFile(file);
@@ -23,7 +24,7 @@ export function FileExplorer({ onFileSelect }) {
           <div>
             <h2 className="font-semibold">Explorer</h2>
             <p className="text-sm text-muted-foreground">
-              {currentPath === '/' ? 'Root directory' : `Directory: ${currentPath}`}
+              {currentDirectory.path === '/' ? 'Root directory' : `Directory: ${currentDirectory.path}`}
             </p>
           </div>
         </div>
@@ -53,8 +54,8 @@ export function FileExplorer({ onFileSelect }) {
               onFileSelect={handleFileSelect} 
               viewMode={viewMode} 
               selectedFilePath={selectedFile?.name}
-              currentPath={currentPath}
-              onNavigate={setCurrentPath}
+              currentPath={currentDirectory.path}
+              onNavigate={loadDirectory}
             />
           </CardContent>
         </Card>
