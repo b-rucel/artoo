@@ -11,7 +11,7 @@ function App() {
     <div className="min-h-screen bg-background">
       <Header />
       <div className="flex h-[calc(100vh-3.5rem)]">
-        <FolderTree />
+        <FolderTree currentPath="/" />
         <FileExplorer onFileSelect={setSelectedFile} />
         <FileDetails file={selectedFile} />
       </div>
