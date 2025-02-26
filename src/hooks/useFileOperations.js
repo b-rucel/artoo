@@ -59,6 +59,7 @@ export function useFileOperations() {
 
   return {
     currentDirectory: state.currentDirectory,
+    folderStructure: state.folderStructure,
     selectedFiles: state.selectedFiles,
     isLoading: state.isLoading,
     error: state.error,
