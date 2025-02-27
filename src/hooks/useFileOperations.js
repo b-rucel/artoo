@@ -10,13 +10,13 @@ export function useFileOperations() {
       dispatch({ type: 'SET_LOADING', payload: true });
       dispatch({ type: 'SET_ERROR', payload: null });
 
-      const contents = await fileService.listDirectory(path);
+      const { directories, files } = await fileService.getDirectoryContents(path);
 
-      dispatch({ type: 'SET_CONTENTS', payload: contents });
       dispatch({ type: 'SET_CURRENT_DIRECTORY',
         payload: {
           path,
-          contents
+          directories,
+          files
         }
       });
     } catch (err) {
