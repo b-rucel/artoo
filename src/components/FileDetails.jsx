@@ -1,11 +1,11 @@
-import { FileIcon, FileTextIcon, FileVideoIcon, FileAudioIcon, FileImageIcon } from "lucide-react"
+import { FileIcon, FileTextIcon, FileVideoIcon, FileAudioIcon, FileImageIcon, XIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { formatFileSize } from "@/lib/utils"
 import { fileService } from "@/services/fileService"
 
 
-export function FileDetails({ file }) {
+export function FileDetails({ file, onClose }) {
   const isImage = file?.name?.match(/\.(jpg|jpeg|png|gif|webp|svg)$/i);
   const isVideo = file?.name?.match(/\.(mp4|webm|mov|avi)$/i);
   const isAudio = file?.name?.match(/\.(mp3|wav|ogg|m4a)$/i);
@@ -59,9 +59,14 @@ export function FileDetails({ file }) {
   if (!file) {
     return (
       <aside className="w-80 border-l p-4">
-        <div className="flex items-center gap-2 mb-4">
-          <FileIcon className="h-5 w-5 text-muted-foreground" />
-          <h2 className="font-semibold">details</h2>
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <FileIcon className="h-5 w-5 text-muted-foreground" />
+            <h2 className="font-semibold">details</h2>
+          </div>
+          <Button variant="ghost" size="icon" className="md:hidden" onClick={onClose}>
+            <XIcon className="h-4 w-4" />
+          </Button>
         </div>
         <Card className="rounded">
           <CardContent className="pt-6">
@@ -76,9 +81,14 @@ export function FileDetails({ file }) {
 
   return (
     <aside className="w-80 border-l p-4">
-      <div className="flex items-center gap-2 mb-4">
-        {getFileIcon()}
-        <h2 className="font-semibold">details</h2>
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2">
+          {getFileIcon()}
+          <h2 className="font-semibold">details</h2>
+        </div>
+        <Button variant="ghost" size="icon" className="md:hidden" onClick={onClose}>
+          <XIcon className="h-4 w-4" />
+        </Button>
       </div>
       <Card className="rounded">
         <CardContent className="pt-6">

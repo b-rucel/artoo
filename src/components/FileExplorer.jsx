@@ -20,9 +20,9 @@ export function FileExplorer({ onFileSelect }) {
     <main className="flex-1 p-4 flex flex-col">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-4">
-          <h1 className="text-2xl font-bold">Files</h1>
+          <h1 className="text-2xl font-bold">files</h1>
           <div>
-            <h2 className="font-semibold">Explorer</h2>
+            <h2 className="font-semibold">explorer</h2>
             <p className="text-sm text-muted-foreground">
               {currentDirectory.path === '/' ? 'Root directory' : `Directory: ${currentDirectory.path}`}
             </p>

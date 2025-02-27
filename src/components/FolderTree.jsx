@@ -3,7 +3,7 @@ import { useFileOperations } from '../hooks/useFileOperations';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { ChevronRight, ChevronDown } from 'lucide-react';
 
-export function FolderTree({ currentPath }) {
+export function FolderTree({ currentPath, onNavigate }) {
   const {
     folderStructure,
     isLoading,
@@ -54,6 +54,11 @@ export function FolderTree({ currentPath }) {
   };
 
   // Update the tree rendering section
+  const handleDirectoryClick = (path) => {
+    loadDirectory(path);
+    onNavigate?.(); // Close panel on mobile
+  };
+
   const renderDirectory = (item) => {
     const isExpanded = expandedDirs.has(item.path);
     const isSelected = currentPath === item.path;
@@ -61,7 +66,7 @@ export function FolderTree({ currentPath }) {
     return (
       <li key={item.path}>
         <div
-          onClick={() => loadDirectory(item.path)}
+          onClick={() => handleDirectoryClick(item.path)}
           className={`
             flex items-center px-2 py-1.5 rounded
             text-sm
@@ -99,29 +104,29 @@ export function FolderTree({ currentPath }) {
   };
 
   if (isLoading) return (
-    <Card>
-      <CardContent className="flex items-center justify-center h-32">
+    <Card className="h-full rounded-none border-t-0">
+      <CardContent className="flex items-center justify-center h-full">
         <div className="text-muted-foreground">Loading...</div>
       </CardContent>
     </Card>
   );
 
   if (error) return (
-    <Card>
-      <CardContent className="flex items-center justify-center h-32">
+    <Card className="h-full rounded-none border-t-0">
+      <CardContent className="flex items-center justify-center h-full">
         <div className="text-destructive">Error: {error}</div>
       </CardContent>
     </Card>
   );
 
   return (
-    <Card className="min-w-[200px] rounded-none border-t-0">
+    <Card className="h-full min-w-[200px] rounded-none border-t-0">
       <CardHeader className="px-6 py-2">
         <CardTitle className="text-sm font-medium">
           files
         </CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="h-[calc(100%-45px)] overflow-y-auto">
         <ul className="space-y-1">
           {folderStructure && folderStructure.length > 0 && renderDirectory(folderStructure[0])}
         </ul>
