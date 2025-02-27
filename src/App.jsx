@@ -21,7 +21,10 @@ function App() {
           transition-transform duration-200 ease-in-out
           ${showFolderTree ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
         `}>
-          <FolderTree currentPath="/" />
+          <FolderTree 
+            currentPath="/" 
+            onNavigate={() => setShowFolderTree(false)}
+          />
         </div>
 
         <div className="flex-1 relative">
