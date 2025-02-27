@@ -5,7 +5,7 @@ import { ChevronRight, ChevronDown } from 'lucide-react';
 
 export function FolderTree({ currentPath }) {
   const {
-    currentDirectory,
+    folderStructure,
     isLoading,
     error,
     loadDirectory
@@ -13,11 +13,6 @@ export function FolderTree({ currentPath }) {
 
   // Track expanded directories
   const [expandedDirs, setExpandedDirs] = useState(new Set(['/']));
-
-  // Load root directory on mount
-  useEffect(() => {
-    loadDirectory('/');
-  }, [loadDirectory]);
 
   // Automatically expand parent directories when currentPath changes
   useEffect(() => {
@@ -58,58 +53,7 @@ export function FolderTree({ currentPath }) {
     });
   };
 
-  // Transform flat file list into directory structure
-  const buildDirectoryTree = (files) => {
-    const root = { path: '/', name: '/', type: 'directory', contents: [] };
-    const pathMap = { '/': root };
-
-    files.forEach(file => {
-      // Remove leading slash if present
-      const normalizedName = file.name.startsWith('/') ? file.name.slice(1) : file.name;
-      const parts = normalizedName.split('/');
-
-      // Build each directory in the path
-      let currentPath = '';
-      parts.forEach((part, index) => {
-        const isLastPart = index === parts.length - 1;
-        const parentPath = currentPath;
-        currentPath = currentPath ? `${currentPath}/${part}` : part;
-        const fullPath = '/' + currentPath;
-
-        if (!isLastPart) {
-          if (!pathMap[fullPath]) {
-            const dirEntry = {
-              path: fullPath,
-              name: part,
-              type: 'directory',
-              contents: []
-            };
-            pathMap[fullPath] = dirEntry;
-
-            // Add to parent's contents
-            const parentFullPath = parentPath ? '/' + parentPath : '/';
-            pathMap[parentFullPath].contents.push(dirEntry);
-          }
-        } else if (file.type !== 'directory') {
-          // Add file to its parent directory
-          const parentFullPath = parentPath ? '/' + parentPath : '/';
-          pathMap[parentFullPath].contents.push({
-            path: '/' + currentPath,
-            name: part,
-            type: 'file',
-            size: file.size,
-            uploaded: file.uploaded
-          });
-        }
-      });
-    });
-
-    return root;
-  };
-
-  // Build the tree from the current directory's contents
-  const directoryTree = currentDirectory?.contents ? buildDirectoryTree(currentDirectory.contents) : null;
-
+  // Update the tree rendering section
   const renderDirectory = (item) => {
     const isExpanded = expandedDirs.has(item.path);
     const isSelected = currentPath === item.path;
@@ -143,10 +87,9 @@ export function FolderTree({ currentPath }) {
             {item.name}
           </span>
         </div>
-        {isExpanded && item.contents && (
+        {isExpanded && item.children && (
           <ul className="pl-4 space-y-1 mt-1">
-            {item.contents
-              .filter(child => child.type === 'directory')
+            {item.children
               .sort((a, b) => a.name.localeCompare(b.name))
               .map(child => renderDirectory(child))}
           </ul>
@@ -175,12 +118,12 @@ export function FolderTree({ currentPath }) {
     <Card className="min-w-[200px] rounded-none border-t-0">
       <CardHeader className="px-6 py-2">
         <CardTitle className="text-sm font-medium">
-          Files
+          files
         </CardTitle>
       </CardHeader>
       <CardContent>
         <ul className="space-y-1">
-          {directoryTree && renderDirectory(directoryTree)}
+          {folderStructure && folderStructure.length > 0 && renderDirectory(folderStructure[0])}
         </ul>
       </CardContent>
     </Card>
