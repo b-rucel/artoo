@@ -1,11 +1,60 @@
-import { FileIcon } from "lucide-react"
+import { FileIcon, FileTextIcon, FileVideoIcon, FileAudioIcon, FileImageIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { formatFileSize } from "@/lib/utils"
 import { fileService } from "@/services/fileService"
 
+
 export function FileDetails({ file }) {
   const isImage = file?.name?.match(/\.(jpg|jpeg|png|gif|webp|svg)$/i);
+  const isVideo = file?.name?.match(/\.(mp4|webm|mov|avi)$/i);
+  const isAudio = file?.name?.match(/\.(mp3|wav|ogg|m4a)$/i);
+  const isText = file?.name?.match(/\.(txt|md|json|js|jsx|ts|tsx|css|html)$/i);
+
+  const getFilePreview = () => {
+    if (isImage) {
+      return (
+        <div className="aspect-square w-full overflow-hidden rounded-lg border flex items-center justify-center bg-muted/10">
+          <img
+            src={`${fileService.baseUrl}/files/${file.name}`}
+            alt={file.name}
+            className="max-h-full max-w-full object-contain rounded"
+          />
+        </div>
+      );
+    }
+    if (isVideo) {
+      return (
+        <div className="aspect-square w-full overflow-hidden rounded-lg border flex items-center justify-center bg-muted/10">
+          <video
+            src={`${fileService.baseUrl}/files/${file.name}`}
+            controls
+            className="w-full h-full object-contain"
+          />
+        </div>
+      );
+    }
+    if (isAudio) {
+      return (
+        <div className="w-full rounded-lg border p-4">
+          <audio
+            src={`${fileService.baseUrl}/files/${file.name}`}
+            controls
+            className="w-full"
+          />
+        </div>
+      );
+    }
+    return null;
+  };
+
+  const getFileIcon = () => {
+    if (isImage) return <FileImageIcon className="h-5 w-5 text-muted-foreground" />;
+    if (isVideo) return <FileVideoIcon className="h-5 w-5 text-muted-foreground" />;
+    if (isAudio) return <FileAudioIcon className="h-5 w-5 text-muted-foreground" />;
+    if (isText) return <FileTextIcon className="h-5 w-5 text-muted-foreground" />;
+    return <FileIcon className="h-5 w-5 text-muted-foreground" />;
+  };
 
   if (!file) {
     return (
@@ -25,25 +74,16 @@ export function FileDetails({ file }) {
     )
   }
 
-
   return (
     <aside className="w-80 border-l p-4">
       <div className="flex items-center gap-2 mb-4">
-        <FileIcon className="h-5 w-5 text-muted-foreground" />
+        {getFileIcon()}
         <h2 className="font-semibold">details</h2>
       </div>
       <Card className="rounded">
         <CardContent className="pt-6">
           <div className="space-y-4">
-            {isImage && (
-              <div className="aspect-square w-full overflow-hidden rounded-lg border flex items-center justify-center bg-muted/10">
-                <img
-                  src={`${fileService.baseUrl}/files/${file.name}`}
-                  alt={file.name}
-                  className="max-h-full max-w-full object-contain rounded"
-                />
-              </div>
-            )}
+            {getFilePreview()}
             <div>
               <label className="text-sm font-medium text-muted-foreground">Name</label>
               <p className="mt-1">{file.name}</p>
