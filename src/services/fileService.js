@@ -19,7 +19,6 @@ class TrieNode {
 class FileService {
   constructor() {
     this.baseUrl = import.meta.env.VITE_ARTOO_API_URL;
-    console.log('baseUrl', import.meta.env)
 
     // Initialize trie structure for client-side file system
     this.root = new TrieNode();
