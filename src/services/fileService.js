@@ -18,9 +18,6 @@ class TrieNode {
  */
 class FileService {
   constructor() {
-    // this.baseUrl = import.meta.env.VITE_API_URL;
-    // this.baseUrl = 'https://artoo-api.brucelim.workers.dev/api';
-    // this.baseUrl = 'http://localhost:8787/api';
     this.baseUrl = import.meta.env.VITE_ARTOO_API_URL;
     console.log('baseUrl', import.meta.env)
 

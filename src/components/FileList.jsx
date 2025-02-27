@@ -7,7 +7,6 @@ export function FileList({ onFileSelect, viewMode, selectedFilePath, currentPath
     currentDirectory,
     isLoading,
     error,
-    loadDirectory
   } = useFileOperations();
 
   if (isLoading) return (
@@ -22,40 +21,7 @@ export function FileList({ onFileSelect, viewMode, selectedFilePath, currentPath
     </div>
   );
 
-  const getDirectoryContents = (files) => {
-    const contents = {
-      files: [],
-      directories: new Set()
-    };
-
-    if (!files) return contents;
-
-    files.forEach(file => {
-      const relativePath = file.name.startsWith('/') ? file.name.slice(1) : file.name;
-
-      if (currentPath === '/') {
-        if (!relativePath.includes('/')) {
-          contents.files.push(file);
-        } else {
-          contents.directories.add(relativePath.split('/')[0]);
-        }
-      } else {
-        const pathPrefix = currentPath.slice(1) + '/';
-        if (relativePath.startsWith(pathPrefix)) {
-          const remainingPath = relativePath.slice(pathPrefix.length);
-          if (!remainingPath.includes('/')) {
-            contents.files.push(file);
-          } else {
-            contents.directories.add(remainingPath.split('/')[0]);
-          }
-        }
-      }
-    });
-
-    return contents;
-  };
-
-  const { files, directories } = getDirectoryContents(currentDirectory.contents);
+  const {files, directories} = currentDirectory;
 
   return (
     <div className="space-y-4">
@@ -68,17 +34,8 @@ export function FileList({ onFileSelect, viewMode, selectedFilePath, currentPath
                 onNavigate(parentPath);
               }}
               className={`
-                aspect-square
-                group
-                flex flex-col items-center justify-center
-                p-4
-                rounded
-                hover:bg-accent hover:text-accent-foreground
-                cursor-pointer
-                transition-colors
-                border
-                border-transparent
-                hover:border-border
+                aspect-square group p-4 rounded cursor-pointer transition-colors flex flex-col items-center justify-center
+                hover:bg-accent hover:text-accent-foreground border border-transparent hover:border-border
               `}
             >
               <FolderIcon className="h-12 w-12 text-primary opacity-80 group-hover:opacity-100 mb-3" />
@@ -86,26 +43,17 @@ export function FileList({ onFileSelect, viewMode, selectedFilePath, currentPath
             </div>
           )}
 
-          {Array.from(directories).map(dir => (
+          {directories.map((dir, i) => (
             <div
-              key={dir}
-              onClick={() => onNavigate(`${currentPath === '/' ? '' : currentPath}/${dir}`)}
+              key={i}
+              onClick={() => onNavigate(`${currentPath === '/' ? '' : currentPath}/${dir.name}`)}
               className={`
-                aspect-square
-                group
-                flex flex-col items-center justify-center
-                p-4
-                rounded
-                hover:bg-accent hover:text-accent-foreground
-                cursor-pointer
-                transition-colors
-                border
-                border-transparent
-                hover:border-border
+                aspect-square group p-4 rounded cursor-pointer transition-colors flex flex-col items-center justify-center
+                hover:bg-accent hover:text-accent-foreground border border-transparent hover:border-border
               `}
             >
               <FolderIcon className="h-12 w-12 text-primary opacity-80 group-hover:opacity-100 mb-3" />
-              <span className="text-sm font-medium truncate w-full text-center">{dir}</span>
+              <span className="text-sm font-medium truncate w-full text-center">{dir.name}</span>
               <span className="text-xs text-muted-foreground mt-1">Directory</span>
             </div>
           ))}
@@ -115,19 +63,11 @@ export function FileList({ onFileSelect, viewMode, selectedFilePath, currentPath
               key={file.name}
               onClick={() => onFileSelect(file)}
               className={`
-                aspect-square
-                group
-                flex flex-col items-center justify-center
-                p-4
-                rounded
-                hover:bg-accent hover:text-accent-foreground
-                cursor-pointer
-                transition-colors
-                border
+                aspect-square group p-4 rounded cursor-pointer transition-colors flex flex-col items-center justify-center
+                hover:bg-accent hover:text-accent-foreground border border-transparent hover:border-border
                 ${file.name === selectedFilePath
                   ? 'border-primary bg-accent'
                   : 'border-transparent'}
-                hover:border-border
               `}
             >
               <FileIcon className="h-12 w-12 text-muted-foreground opacity-80 group-hover:opacity-100 mb-3" />
@@ -149,16 +89,8 @@ export function FileList({ onFileSelect, viewMode, selectedFilePath, currentPath
                 onNavigate(parentPath);
               }}
               className={`
-                group
-                flex items-center
-                p-3
-                rounded
-                hover:bg-accent hover:text-accent-foreground
-                cursor-pointer
-                transition-colors
-                border
-                border-transparent
-                hover:border-border
+                group flex items-center p-3 rounded hover:bg-accent hover:text-accent-foreground cursor-pointer
+                transition-colors border border-transparent hover:border-border
               `}
             >
               <FolderIcon className="h-5 w-5 text-primary opacity-80 group-hover:opacity-100 mr-3" />
@@ -166,25 +98,17 @@ export function FileList({ onFileSelect, viewMode, selectedFilePath, currentPath
             </div>
           )}
 
-          {Array.from(directories).map(dir => (
+          {directories.map((dir, i) => (
             <div
-              key={dir}
-              onClick={() => onNavigate(`${currentPath === '/' ? '' : currentPath}/${dir}`)}
+              key={i}
+              onClick={() => onNavigate(`${currentPath === '/' ? '' : currentPath}/${dir.name}`)}
               className={`
-                group
-                flex items-center
-                p-3
-                rounded
-                hover:bg-accent hover:text-accent-foreground
-                cursor-pointer
-                transition-colors
-                border
-                border-transparent
-                hover:border-border
+                group flex items-center p-3 rounded hover:bg-accent hover:text-accent-foreground cursor-pointer
+                transition-colors border border-transparent hover:border-border
               `}
             >
               <FolderIcon className="h-5 w-5 text-primary opacity-80 group-hover:opacity-100 mr-3" />
-              <span className="flex-1 font-medium">{dir}</span>
+              <span className="flex-1 font-medium">{dir.name}</span>
               <span className="text-sm text-muted-foreground">Directory</span>
             </div>
           ))}
@@ -194,18 +118,11 @@ export function FileList({ onFileSelect, viewMode, selectedFilePath, currentPath
               key={file.name}
               onClick={() => onFileSelect(file)}
               className={`
-                group
-                flex items-center
-                p-3
-                rounded
-                hover:bg-accent hover:text-accent-foreground
-                cursor-pointer
-                transition-colors
-                border
+                group flex items-center p-3 rounded hover:bg-accent hover:text-accent-foreground cursor-pointer
+                transition-colors border border-transparent hover:border-border
                 ${file.name === selectedFilePath
                   ? 'border-primary bg-accent'
                   : 'border-transparent'}
-                hover:border-border
               `}
             >
               <FileIcon className="h-5 w-5 text-muted-foreground opacity-80 group-hover:opacity-100 mr-3" />

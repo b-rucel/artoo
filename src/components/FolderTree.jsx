@@ -58,8 +58,6 @@ export function FolderTree({ currentPath }) {
     const isExpanded = expandedDirs.has(item.path);
     const isSelected = currentPath === item.path;
 
-    // console.log('item', item);
-
     return (
       <li key={item.path}>
         <div
