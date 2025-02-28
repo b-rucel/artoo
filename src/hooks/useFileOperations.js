@@ -29,7 +29,7 @@ export function useFileOperations() {
   }, [dispatch]);
 
 
-  const uploadFiles = useCallback(async (files) => {
+  const uploadFiles = useCallback(async (uploadedFiles) => {
     const operationId = crypto.randomUUID();
     try {
       dispatch({
@@ -40,17 +40,37 @@ export function useFileOperations() {
         }
       });
 
-      // Upload each file
-      for (const file of files) {
+      // Upload each file and update Trie
+      for (const file of uploadedFiles) {
         const path = state.currentDirectory.path === '/'
           ? file.name
           : `${state.currentDirectory.path}/${file.name}`;
 
-        await fileService.uploadFile(file, path);
+        const result = await fileService.uploadFile(file, path);
+        const normalizedPath = path === '/' ? '' : path.startsWith('/') ? path.slice(1) : path;
+
+        // update trie with the new file
+        fileService.insertFile(path, {
+          name: normalizedPath,
+          size: file.size,
+          uploaded: new Date().toISOString(),
+          etag: result.etag,
+        });
       }
 
-      // Refresh the current directory
-      await loadDirectory(state.currentDirectory.path);
+      // get directory contents
+      const { directories, files } = fileService.getDirectoryContents(state.currentDirectory.path);
+      dispatch({
+        type: 'SET_CURRENT_DIRECTORY',
+        payload: {
+          path: state.currentDirectory.path,
+          directories,
+          files
+        }
+      });
+
+      // refresh data
+      loadDirectory(state.currentDirectory.path);
 
       dispatch({
         type: 'SET_OPERATION',
@@ -59,7 +79,6 @@ export function useFileOperations() {
           operation: { type: 'upload', status: 'complete' }
         }
       });
-
     } catch (err) {
       dispatch({
         type: 'SET_OPERATION',

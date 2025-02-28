@@ -183,6 +183,10 @@ class FileService {
       }
     }
 
+    // Sort directories and files alphabetically by name
+    directories.sort((a, b) => a.name.localeCompare(b.name));
+    files.sort((a, b) => a.name.localeCompare(b.name));
+
     return { directories, files };
   }
 
