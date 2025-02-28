@@ -40,7 +40,25 @@ export function useFileOperations() {
         }
       });
 
-      // Upload implementation...
+      // Upload each file
+      for (const file of files) {
+        const path = state.currentDirectory.path === '/'
+          ? file.name
+          : `${state.currentDirectory.path}/${file.name}`;
+
+        await fileService.uploadFile(file, path);
+      }
+
+      // Refresh the current directory
+      await loadDirectory(state.currentDirectory.path);
+
+      dispatch({
+        type: 'SET_OPERATION',
+        payload: {
+          id: operationId,
+          operation: { type: 'upload', status: 'complete' }
+        }
+      });
 
     } catch (err) {
       dispatch({
@@ -55,7 +73,7 @@ export function useFileOperations() {
         }
       });
     }
-  }, [dispatch, state.currentDirectory]);
+  }, [dispatch, state.currentDirectory, loadDirectory]);
 
   return {
     currentDirectory: state.currentDirectory,

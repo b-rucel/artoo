@@ -5,6 +5,7 @@ import { useState } from "react"
 import { formatFileSize } from "@/lib/utils"
 import { LayoutGridIcon, ListIcon } from 'lucide-react';
 import { useFileOperations } from "@/hooks/useFileOperations"
+import { FileUpload } from "./FileUpload"
 
 export function FileExplorer({ onFileSelect }) {
   const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'list'
@@ -28,6 +29,13 @@ export function FileExplorer({ onFileSelect }) {
             </p>
           </div>
         </div>
+        <div className="flex items-center gap-2">
+          <FileUpload />
+          <div className="border rounded p-1">
+            {/* ... existing view mode buttons ... */}
+          </div>
+        </div>
+
         <div className="border rounded p-1">
           <button
             onClick={() => setViewMode('grid')}
