@@ -17,8 +17,8 @@ export function FileExplorer({ onFileSelect }) {
   };
 
   return (
-    <main className="flex-1 p-4 flex flex-col">
-      <div className="flex items-center justify-between mb-4">
+    <main className="flex-1 flex flex-col h-full">
+      <div className="flex items-center justify-between p-4">
         <div className="flex items-center gap-4">
           <h1 className="text-2xl font-bold">files</h1>
           <div>
@@ -47,9 +47,9 @@ export function FileExplorer({ onFileSelect }) {
           </button>
         </div>
       </div>
-      <div className="flex gap-4 flex-1">
-        <Card className="flex-1 rounded">
-          <CardContent className="p-0">
+      <div className="flex-1 p-4 pt-0">
+        <Card className="h-full rounded">
+          <CardContent className="p-0 h-full">
             <FileList 
               onFileSelect={handleFileSelect} 
               viewMode={viewMode} 
@@ -62,4 +62,4 @@ export function FileExplorer({ onFileSelect }) {
       </div>
     </main>
   )
-} 
+}
