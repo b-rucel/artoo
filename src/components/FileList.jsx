@@ -24,7 +24,7 @@ export function FileList({ onFileSelect, viewMode, selectedFilePath, currentPath
   const {files, directories} = currentDirectory;
 
   return (
-    <div className="space-y-4">
+    <div className="h-full p-4 overflow-y-auto">
       {viewMode === 'grid' ? (
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
           {currentPath !== '/' && (

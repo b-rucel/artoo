@@ -58,7 +58,7 @@ export function FileDetails({ file, onClose }) {
 
   if (!file) {
     return (
-      <aside className="w-80 border-l p-4">
+      <aside className="h-full w-[36rem] border-l p-4">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <FileIcon className="h-5 w-5 text-muted-foreground" />
@@ -80,7 +80,7 @@ export function FileDetails({ file, onClose }) {
   }
 
   return (
-    <aside className="w-80 border-l p-4">
+    <aside className="h-full w-[36rem] border-l p-4">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           {getFileIcon()}
