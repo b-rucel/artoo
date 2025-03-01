@@ -183,6 +183,10 @@ class FileService {
       }
     }
 
+    // Sort directories and files alphabetically by name
+    directories.sort((a, b) => a.name.localeCompare(b.name));
+    files.sort((a, b) => a.name.localeCompare(b.name));
+
     return { directories, files };
   }
 
@@ -227,20 +231,24 @@ class FileService {
   /**
    * Uploads a file to the server.
    *
-   * This method creates a FormData object, appends the file and path to it, and sends it to the server.
+   * This method sends the file directly in the request body to the server.
+   * The file is sent with its appropriate Content-Type header, defaulting to
+   * 'application/octet-stream' if the type is not specified.
    *
    * @param {File} file - The file to upload.
    * @param {string} path - The path to upload the file to.
    * @returns {Promise<Object>} A promise that resolves to the response from the server.
    */
   async uploadFile(file, path) {
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('path', path);
+    // Normalize the path for the URL
+    const normalizedPath = path.startsWith('/') ? path.slice(1) : path;
 
-    const response = await fetch(`${this.baseUrl}/files`, {
+    const response = await fetch(`${this.baseUrl}/files/${normalizedPath}`, {
       method: 'POST',
-      body: formData,
+      body: file, // Send the file directly as the body
+      headers: {
+        'Content-Type': file.type || 'application/octet-stream',
+      },
     });
 
     if (!response.ok) {
