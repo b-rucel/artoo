@@ -2,12 +2,23 @@ import { Header } from "@/components/Header"
 import { FolderTree } from "@/components/FolderTree"
 import { FileExplorer } from "@/components/FileExplorer"
 import { FileDetails } from "@/components/FileDetails"
+import { Login } from "@/components/Login"
+import { useAuth } from "@/context/AuthContext"
 import { useState } from "react"
 
 function App() {
+  const { isAuthenticated, isLoading } = useAuth();
   const [selectedFile, setSelectedFile] = useState(null);
   const [showFolderTree, setShowFolderTree] = useState(false);
   const [showFileDetails, setShowFileDetails] = useState(false);
+
+  if (isLoading) {
+    return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
+  }
+
+  if (!isAuthenticated) {
+    return <Login />;
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -48,7 +59,7 @@ function App() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
