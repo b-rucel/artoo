@@ -16,6 +16,8 @@ class TrieNode {
  *
  * @class FileService
  */
+import { authService } from './authService';
+
 class FileService {
   constructor() {
     this.baseUrl = import.meta.env.VITE_ARTOO_API_URL;
@@ -243,11 +245,17 @@ class FileService {
     // Normalize the path for the URL
     const normalizedPath = path.startsWith('/') ? path.slice(1) : path;
 
+    const token = authService.getToken();
+    if (!token) {
+      throw new Error('Authentication required');
+    }
+
     const response = await fetch(`${this.baseUrl}/files/${normalizedPath}`, {
       method: 'POST',
-      body: file, // Send the file directly as the body
+      body: file,
       headers: {
         'Content-Type': file.type || 'application/octet-stream',
+        'Authorization': `Bearer ${token}`,
       },
     });
 
