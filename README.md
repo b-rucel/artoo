@@ -1,69 +1,151 @@
-# shadcn-starter
+# Artoo
 
+![artoo](artoo.webp)
 
-#### vite + shadcn/ui + tailwindcss 3 starter
+A cloud-based file management solution built on Cloudflare's edge infrastructure.<br />
+Artoo is the client side component of the Artoo file management system. It provides a modern user interface for secure file operations through Cloudflare Workers and R2 storage.
 
-https://ui.shadcn.com/docs/installation/vite
-vite + shadcn
+api side: https://github.com/b-rucel/artoo-api
 
-```
-bun create vite@latest
+## Features
 
-# go through wizard
+- **Modern File Management**:
+  - Browse files and directories with intuitive navigation
+  - Upload files with progress tracking
+  - Download files directly from the browser
+  - View file details and previews
+- **User Experience**:
+  - Responsive design for desktop and mobile devices
+  - Dark and light theme support
+  - Hierarchical folder tree navigation
+  - Grid and list view options
+- **Security**:
+  - JWT-based authentication
+  - Secure API communication
+  - Protected routes for authenticated users
 
-create a project directory: example.com
+## Self-Hosting Setup
 
-# this example uses React + JavaScript
-❯ React ❯ JavaScript 
-```
+### Prerequisites
 
-place the project in the right directory
+- Node.js >= 18.0.0
+- npm or bun package manager
+- A running instance of the [Artoo API](https://github.com/b-rucel/artoo-api)
 
+### Installation
 
-```
-cd example.com
-bun install
-bun run dev
-```
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/b-rucel/artoo.git
+   cd artoo
+   ```
 
-at this point you'll have a working react project using vite
+2. Install dependencies:
+   ```bash
+   npm install
+   # or
+   bun install
+   ```
 
-shadcn documentation at this point will tell you to install tailwindcss but tailwindcss version has changed to 4
-so following instructions will install version 4, we will be using version 3
+3. Configure the environment:
+   Create or modify `.env` file in the project root:
+   ```
+   VITE_ARTOO_API_URL='https://your-artoo-api-url/api'
+   ```
+   Replace `your-artoo-api-url` with your deployed Artoo API endpoint.
 
-```
-bun install -D tailwindcss@3 postcss autoprefixer
-bunx tailwindcss init -p
-> tailwind.config.js
-> postcss.config.js
+4. Build for production:
+   ```bash
+   npm run build
+   # or
+   bun run build
+   ```
 
-touch tsconfig.json
-touch tsconfig.app.json
+5. Deploy the contents of the `dist` directory to your preferred hosting service:
+   - Cloudflare Pages
+   - Vercel
+   - Netlify
+   - GitHub Pages
+   - Any static file hosting
 
-add tailwind styles to index.css
-configure tsconfig files
+### Deployment Options
 
-bun add -D @types/node
-bunx --bun shadcn@latest init
+#### Cloudflare Pages (Recommended)
 
-should have all the checks marked off
+For the best performance with your Artoo API running on Cloudflare Workers:
 
-go through another wizard
+1. Log in to your Cloudflare dashboard
+2. Navigate to Pages and create a new project
+3. Connect your GitHub repository or upload the `dist` directory
+4. Configure build settings if deploying directly from source:
+   - Build command: `npm run build`
+   - Build output directory: `dist`
+5. Set environment variables (including `VITE_ARTOO_API_URL`)
+6. Deploy
 
-✔ Preflight checks.
-✔ Verifying framework. Found Vite.
-✔ Validating Tailwind CSS.
-✔ Validating import alias.
-✔ Which style would you like to use? › New York
-✔ Which color would you like to use as the base color? › Slate
-✔ Would you like to use CSS variables for theming? … no / yes
-✔ Writing components.json.
-✔ Checking registry.
-✔ Updating tailwind.config.js
-✔ Updating src/index.css
-✔ Installing dependencies.
-✔ Created 1 file:
-  - src/lib/utils.ts
+## Local Development Setup
 
-bunx --bun shadcn@latest add button card badge
-```
+### Prerequisites
+
+- Node.js >= 18.0.0
+- npm or bun package manager
+- A running instance of the Artoo API (local or remote)
+
+### Installation
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/b-rucel/artoo.git
+   cd artoo
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   # or
+   bun install
+   ```
+
+3. Configure the environment:
+   Create or modify `.env` file in the project root:
+   ```
+   VITE_ARTOO_API_URL='http://localhost:8787/api'
+   ```
+   Adjust the URL to point to your development API endpoint.
+
+4. Start the development server:
+   ```bash
+   npm run dev
+   # or
+   bun run dev
+   ```
+
+5. Access the application at http://localhost:5173
+
+## Technology Stack
+
+- React 19
+- Vite
+- Tailwind CSS
+- Shadcn UI components
+- Lucide React icons
+
+## User Management
+
+The Artoo UI connects to the Artoo API for authentication. Users are managed through the API's KV namespace. See the [API documentation](https://github.com/b-rucel/artoo-api) for details on how to add and manage users.
+
+## Browser Compatibility
+
+The application is compatible with modern browsers:
+- Chrome (latest)
+- Firefox (latest)
+- Safari (latest)
+- Edge (latest)
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+[MIT](LICENSE)
