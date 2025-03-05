@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Card, CardHeader, CardTitle, CardContent } from './ui/card';
+import logo from '../assets/artoo.png';
 
 export function Login() {
   const [username, setUsername] = useState('');
@@ -21,7 +22,9 @@ export function Login() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-background p-4">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-background p-4">
+      <img src={logo} alt="Logo" className="mb-4" />
+
       <Card className="w-full max-w-sm">
         <CardHeader>
           <CardTitle>Login</CardTitle>
