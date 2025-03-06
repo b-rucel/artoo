@@ -1,0 +1,31 @@
+.bg-gradient-yellow {
+  @apply bg-gradient-to-r from-[#FFDAA4] to-[#FFF06A];
+  background-image: radial-gradient(circle, #FFDAA4, #FFF06A);
+  opacity: .1;
+}
+
+.bg-gradient-pink {
+  background-image: linear-gradient(45deg, #FF48B6, #FF961C, #FFD600);
+  opacity: .1;
+}
+
+.bg-gradient-orange {
+  background-image: radial-gradient(circle, #FFD600, #FF4205, #FFD600);
+  opacity: .1;
+}
+
+/* Dark mode variants */
+.dark .bg-gradient-yellow {
+  background-image: radial-gradient(circle, #2A4365, #1A365D);
+  opacity: .4;
+}
+
+.dark .bg-gradient-pink {
+  background-image: linear-gradient(45deg, #553C9A, #2C5282, #1A365D);
+  opacity: .6;
+}
+
+.dark .bg-gradient-orange {
+  background-image: radial-gradient(circle, #2D3748, #1A202C, #171923);
+  opacity: .6;
+}
