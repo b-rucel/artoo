@@ -6,11 +6,15 @@ import { formatFileSize } from "@/lib/utils"
 import { LayoutGridIcon, ListIcon } from 'lucide-react';
 import { useFileOperations } from "@/hooks/useFileOperations"
 import { FileUpload } from "./FileUpload"
+import { useAuth } from "@/context/AuthContext"
+import { Button } from "@/components/ui/button"
+import { LogInIcon } from 'lucide-react';
 
-export function FileExplorer({ onFileSelect }) {
-  const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'list'
+export function FileExplorer({ onFileSelect, onLoginClick }) {
+  const [viewMode, setViewMode] = useState('grid');
   const [selectedFile, setSelectedFile] = useState(null);
   const { currentDirectory, loadDirectory } = useFileOperations();
+  const { isAuthenticated } = useAuth();
 
   const handleFileSelect = (file) => {
     setSelectedFile(file);
@@ -30,10 +34,14 @@ export function FileExplorer({ onFileSelect }) {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <FileUpload />
-          <div className="border rounded p-1">
-            {/* ... existing view mode buttons ... */}
-          </div>
+          {isAuthenticated ? (
+            <FileUpload />
+          ) : (
+            <Button variant="outline" onClick={onLoginClick}>
+              <LogInIcon className="h-4 w-4 mr-2" />
+              Login
+            </Button>
+          )}
         </div>
 
         <div className="border rounded p-1">

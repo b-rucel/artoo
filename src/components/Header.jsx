@@ -1,12 +1,14 @@
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Moon, Sun } from "lucide-react"
+import { Moon, Sun, LogIn, LogOut } from "lucide-react"
 import { useTheme } from "@/components/theme-provider"
+import { useAuth } from "@/context/AuthContext"
 import "./Header.css"
 import logo from "../assets/artoo.png"
 
-export function Header({ onFolderTreeToggle }) {
+export function Header({ onFolderTreeToggle, onLoginClick }) {
   const { theme, setTheme } = useTheme()
+  const { isAuthenticated, logout } = useAuth()
 
   return (
     <header className="border-b relative overflow-hidden">
@@ -25,6 +27,15 @@ export function Header({ onFolderTreeToggle }) {
           </h1>
         </button>
         <div className="flex items-center gap-4">
+          {isAuthenticated ? (
+            <Button variant="ghost" size="icon" onClick={logout} title="LogOut">
+              <LogOut className="h-5 w-5" />
+            </Button>
+          ) : (
+            <Button variant="ghost" size="icon" onClick={onLoginClick} title="LogIn">
+              <LogIn className="h-5 w-5" />
+            </Button>
+          )}
           <Button
             variant="ghost"
             size="icon"

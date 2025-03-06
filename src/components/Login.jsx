@@ -5,7 +5,7 @@ import { Input } from './ui/input';
 import { Card, CardHeader, CardTitle, CardContent } from './ui/card';
 import logo from '../assets/artoo.png';
 
-export function Login() {
+export function Login({ onSuccess, onCancel }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -16,7 +16,9 @@ export function Login() {
     setError('');
     
     const success = await login(username, password);
-    if (!success) {
+    if (success) {
+      onSuccess?.();
+    } else {
       setError('Invalid username or password');
     }
   };
@@ -50,9 +52,14 @@ export function Login() {
             {error && (
               <div className="text-sm text-destructive">{error}</div>
             )}
-            <Button type="submit" className="w-full">
-              Login
-            </Button>
+            <div className="flex gap-2">
+              <Button type="button" variant="outline" onClick={onCancel} className="flex-1">
+                Cancel
+              </Button>
+              <Button type="submit" className="flex-1">
+                Login
+              </Button>
+            </div>
           </form>
         </CardContent>
       </Card>
