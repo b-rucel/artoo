@@ -283,7 +283,7 @@ export function FileList({ onFileSelect, viewMode, selectedFilePath, currentPath
 
   // Handle file actions
   const handleFileAction = async (action, file) => {
-    setContextMenuFile(null); // Close the menu
+    setContextMenuFile(null);
 
     switch (action) {
       case 'download':
@@ -291,26 +291,19 @@ export function FileList({ onFileSelect, viewMode, selectedFilePath, currentPath
           await downloadFile(file.name);
         } catch (error) {
           console.error('Error downloading file:', error);
-          // You might want to show a toast notification here
         }
         break;
 
       case 'copy':
-        // Copy file URL to clipboard
         try {
-          await navigator.clipboard.writeText(`${fileService.baseUrl}/files/${file.name}`);
-          // You might want to show a success toast notification here
-          console.log('File URL copied to clipboard');
+          console.log('copy file to destination');
         } catch (error) {
           console.error('Error copying to clipboard:', error);
-          // You might want to show an error toast notification here
         }
         break;
 
       case 'move':
-        // Implement move functionality
-        console.log('Move file:', file);
-        // You might want to open a modal to select destination
+        console.log('move file to destination');
         break;
 
       case 'delete':
@@ -320,7 +313,6 @@ export function FileList({ onFileSelect, viewMode, selectedFilePath, currentPath
           }
         } catch (error) {
           console.error('Error deleting file:', error);
-          // You might want to show a toast notification here
         }
         break;
 

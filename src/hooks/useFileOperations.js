@@ -97,11 +97,7 @@ export function useFileOperations() {
 
   const downloadFile = async (fileName) => {
     try {
-      const response = await fetch(`${fileService.baseUrl}/download/${fileName}`, {
-        headers: {
-          // Add any necessary auth headers here
-        }
-      });
+      const response = await fetch(`${fileService.baseUrl}/download/${fileName}`);
 
       if (!response.ok) throw new Error('Download failed');
 
@@ -119,7 +115,23 @@ export function useFileOperations() {
     }
   };
 
-  // deleteFiles
+
+  const deleteFile = useCallback(async (file) => {
+    try {
+      await fileService.deleteFile(file);
+
+      dispatch({
+        type: 'SET_CURRENT_DIRECTORY',
+        payload: {
+          path: state.currentDirectory.path,
+          directories: state.currentDirectory.directories,
+          files: state.currentDirectory.files.filter(f => f.name !== file.name)
+        }
+      });
+    } catch (error) {
+      throw new Error(`Failed to delete file: ${error.message}`);
+    }
+  });
 
 
   return {
@@ -131,5 +143,6 @@ export function useFileOperations() {
     loadDirectory,
     uploadFiles,
     downloadFile,
+    deleteFile,
   };
 }
