@@ -94,6 +94,46 @@ export function useFileOperations() {
     }
   }, [dispatch, state.currentDirectory, loadDirectory]);
 
+
+  const downloadFile = async (fileName) => {
+    try {
+      const response = await fetch(`${fileService.baseUrl}/download/${fileName}`);
+
+      if (!response.ok) throw new Error('Download failed');
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = fileName.split('/').pop();
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      throw new Error(`Failed to download file: ${error.message}`);
+    }
+  };
+
+
+  const deleteFile = useCallback(async (file) => {
+    try {
+      await fileService.deleteFile(file);
+
+      dispatch({
+        type: 'SET_CURRENT_DIRECTORY',
+        payload: {
+          path: state.currentDirectory.path,
+          directories: state.currentDirectory.directories,
+          files: state.currentDirectory.files.filter(f => f.name !== file.name)
+        }
+      });
+    } catch (error) {
+      throw new Error(`Failed to delete file: ${error.message}`);
+    }
+  });
+
+
   return {
     currentDirectory: state.currentDirectory,
     folderStructure: state.folderStructure,
@@ -102,5 +142,7 @@ export function useFileOperations() {
     error: state.error,
     loadDirectory,
     uploadFiles,
+    downloadFile,
+    deleteFile,
   };
 }

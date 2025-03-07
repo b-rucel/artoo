@@ -265,7 +265,63 @@ class FileService {
     return response.json();
   }
 
-  // Additional methods for other file operations
+  async deleteFile(file) {
+    const fileName = file.name;
+    const normalizedPath = fileName.startsWith('/') ? fileName.slice(1) : fileName;
+
+    const token = authService.getToken();
+    if (!token) {
+      throw new Error('Authentication required');
+    }
+
+    const response = await fetch(`${this.baseUrl}/files/${normalizedPath}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error || 'Failed to delete file');
+    }
+
+    // Remove the file from the trie structure
+    this.removeFile(normalizedPath);
+    return response.json();
+  }
+
+  removeFile(filePath) {
+    const parts = filePath.split('/');
+    let node = this.root;
+    const nodes = [node];
+
+    // Navigate to the file node
+    for (const part of parts) {
+      if (!node.children[part]) return;
+      node = node.children[part];
+      nodes.push(node);
+    }
+
+    // Remove the file
+    if (node.isFile) {
+      node.isFile = false;
+      node.fileData = null;
+
+      // Clean up empty parent directories
+      for (let i = nodes.length - 1; i > 0; i--) {
+        const currentNode = nodes[i];
+        const parentNode = nodes[i - 1];
+        const segment = parts[i - 1];
+
+        if (!currentNode.isFile && Object.keys(currentNode.children).length === 0) {
+          delete parentNode.children[segment];
+        } else {
+          break;
+        }
+      }
+    }
+  }
 }
 
 export const fileService = new FileService();
