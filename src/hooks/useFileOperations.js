@@ -134,6 +134,30 @@ export function useFileOperations() {
   });
 
 
+  const moveFile = useCallback(async (file, destination) => {
+    try {
+      await fileService.moveFile(file, destination);
+
+      // Refresh the current directory
+      loadDirectory(state.currentDirectory.path);
+    } catch (error) {
+      throw new Error(`Failed to move file: ${error.message}`);
+    }
+  }, [state.currentDirectory.path, loadDirectory]);
+
+
+  const copyFile = useCallback(async (file, destination) => {
+    try {
+      await fileService.copyFile(file, destination);
+
+      // Refresh the current directory
+      loadDirectory(state.currentDirectory.path);
+    } catch (error) {
+      throw new Error(`Failed to copy file: ${error.message}`);
+    }
+  }, [state.currentDirectory.path, loadDirectory]);
+
+
   return {
     currentDirectory: state.currentDirectory,
     folderStructure: state.folderStructure,
@@ -144,5 +168,7 @@ export function useFileOperations() {
     uploadFiles,
     downloadFile,
     deleteFile,
+    moveFile,
+    copyFile,
   };
 }
