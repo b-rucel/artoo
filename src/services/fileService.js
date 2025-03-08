@@ -29,6 +29,7 @@ class FileService {
     this.error = null;
   }
 
+
   /**
    * Lists the contents of a directory.
    *
@@ -67,6 +68,7 @@ class FileService {
     return files;
   }
 
+
   /**
    * Initiates the loading of the file system from the server.
    *
@@ -99,6 +101,145 @@ class FileService {
     }
   }
 
+
+  /**
+   * Uploads a file to the server.
+   *
+   * This method sends the file directly in the request body to the server.
+   * The file is sent with its appropriate Content-Type header, defaulting to
+   * 'application/octet-stream' if the type is not specified.
+   *
+   * @param {File} file - The file to upload.
+   * @param {string} path - The path to upload the file to.
+   * @returns {Promise<Object>} A promise that resolves to the response from the server.
+   */
+  async uploadFile(file, path) {
+    // Normalize the path for the URL
+    const normalizedPath = path.startsWith('/') ? path.slice(1) : path;
+
+    const token = authService.getToken();
+    if (!token) {
+      throw new Error('Authentication required');
+    }
+
+    const response = await fetch(`${this.baseUrl}/files/${normalizedPath}`, {
+      method: 'POST',
+      body: file,
+      headers: {
+        'Content-Type': file.type || 'application/octet-stream',
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to upload file');
+    }
+    return response.json();
+  }
+
+
+  async deleteFile(file) {
+    const fileName = file.name;
+    const normalizedPath = fileName.startsWith('/') ? fileName.slice(1) : fileName;
+
+    const token = authService.getToken();
+    if (!token) {
+      throw new Error('Authentication required');
+    }
+
+    const response = await fetch(`${this.baseUrl}/files/${normalizedPath}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error || 'Failed to delete file');
+    }
+
+    // Remove the file from the trie structure
+    this.removeFile(normalizedPath);
+    return response.json();
+  }
+
+
+  async copyFile(file, destination) {
+    const sourcePath = file.name;
+    const normalizedSource = sourcePath.startsWith('/') ? sourcePath.slice(1) : sourcePath;
+    const normalizedDest = destination.startsWith('/') ? destination.slice(1) : destination;
+
+    const token = authService.getToken();
+    if (!token) {
+      throw new Error('Authentication required');
+    }
+
+    const response = await fetch(`${this.baseUrl}/copy/${normalizedSource}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({ destination: normalizedDest }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error || 'Failed to copy file');
+    }
+
+    // Update the trie structure by adding the new copy
+    const result = await response.json();
+    this.insertFile(normalizedDest, {
+      name: normalizedDest,
+      size: file.size,
+      etag: result.etag,
+    });
+
+    return result;
+  }
+
+
+  async moveFile(file, destination) {
+    const sourcePath = file.name;
+    const normalizedSource = sourcePath.startsWith('/') ? sourcePath.slice(1) : sourcePath;
+    const normalizedDest = destination.startsWith('/') ? destination.slice(1) : destination;
+
+    const token = authService.getToken();
+    if (!token) {
+      throw new Error('Authentication required');
+    }
+
+    const response = await fetch(`${this.baseUrl}/move/${normalizedSource}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({ destination: normalizedDest }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error || 'Failed to move file');
+    }
+
+    // Update the trie structure
+    this.removeFile(normalizedSource);
+    const result = await response.json();
+    this.insertFile(normalizedDest, {
+      name: normalizedDest,
+      size: file.size,
+      etag: result.etag,
+    });
+
+    return result;
+  }
+
+
+  // trie node methods
+
   /**
    * Updates the file system trie structure with the new data.
    *
@@ -113,6 +254,7 @@ class FileService {
     });
     this.isLoaded = true;
   }
+
 
   /**
    * Inserts a file into the trie structure.
@@ -143,6 +285,7 @@ class FileService {
     node.isFile = true;
     node.fileData = fileData;
   }
+
 
   /**
    * Retrieves the contents of a specified directory from the trie structure.
@@ -192,6 +335,7 @@ class FileService {
     return { directories, files };
   }
 
+
   /**
    * Builds and returns the folder structure of the file system.
    *
@@ -230,66 +374,6 @@ class FileService {
     }];
   }
 
-  /**
-   * Uploads a file to the server.
-   *
-   * This method sends the file directly in the request body to the server.
-   * The file is sent with its appropriate Content-Type header, defaulting to
-   * 'application/octet-stream' if the type is not specified.
-   *
-   * @param {File} file - The file to upload.
-   * @param {string} path - The path to upload the file to.
-   * @returns {Promise<Object>} A promise that resolves to the response from the server.
-   */
-  async uploadFile(file, path) {
-    // Normalize the path for the URL
-    const normalizedPath = path.startsWith('/') ? path.slice(1) : path;
-
-    const token = authService.getToken();
-    if (!token) {
-      throw new Error('Authentication required');
-    }
-
-    const response = await fetch(`${this.baseUrl}/files/${normalizedPath}`, {
-      method: 'POST',
-      body: file,
-      headers: {
-        'Content-Type': file.type || 'application/octet-stream',
-        'Authorization': `Bearer ${token}`,
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to upload file');
-    }
-    return response.json();
-  }
-
-  async deleteFile(file) {
-    const fileName = file.name;
-    const normalizedPath = fileName.startsWith('/') ? fileName.slice(1) : fileName;
-
-    const token = authService.getToken();
-    if (!token) {
-      throw new Error('Authentication required');
-    }
-
-    const response = await fetch(`${this.baseUrl}/files/${normalizedPath}`, {
-      method: 'DELETE',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-      },
-    });
-
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.error || 'Failed to delete file');
-    }
-
-    // Remove the file from the trie structure
-    this.removeFile(normalizedPath);
-    return response.json();
-  }
 
   removeFile(filePath) {
     const parts = filePath.split('/');

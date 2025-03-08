@@ -242,13 +242,15 @@ export function FileList({ onFileSelect, viewMode, selectedFilePath, currentPath
   const [contextMenuFile, setContextMenuFile] = useState(null);
   const [contextMenuDir, setContextMenuDir] = useState(null);
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
+
   const {
     currentDirectory,
     isLoading,
     error,
     downloadFile,
     deleteFile,
-    deleteDirectory,
+    moveFile,
+    copyFile,
   } = useFileOperations();
 
   if (isLoading) return (
@@ -296,14 +298,24 @@ export function FileList({ onFileSelect, viewMode, selectedFilePath, currentPath
 
       case 'copy':
         try {
-          console.log('copy file to destination');
+          const destination = prompt('Enter destination path:', file.name);
+          if (destination && destination !== file.name) {
+            await copyFile(file, destination);
+          }
         } catch (error) {
-          console.error('Error copying to clipboard:', error);
+          console.error('Error copying file:', error);
         }
         break;
 
       case 'move':
-        console.log('move file to destination');
+        try {
+          const destination = prompt('Enter destination path:', file.name);
+          if (destination && destination !== file.name) {
+            await moveFile(file, destination);
+          }
+        } catch (error) {
+          console.error('Error moving file:', error);
+        }
         break;
 
       case 'delete':
@@ -342,7 +354,7 @@ export function FileList({ onFileSelect, viewMode, selectedFilePath, currentPath
       case 'delete':
         try {
           if (window.confirm(`Are you sure you want to delete ${directory.name} and all its contents?`)) {
-            await deleteDirectory(directory);
+            // await deleteDirectory(directory);
           }
         } catch (error) {
           console.error('Error deleting directory:', error);
